@@ -1,0 +1,471 @@
+PVector Dloc;
+PVector dir;
+//R=rotation
+//L=lowwer/left
+//T=tip/Top
+//F=front
+//B=back
+float headR, TneckR, LneckR; //HeadandNeck
+float LtailR, MtailR, RtailR, TtailR;//Tail
+float BLTlegR, BLLlegR;//BackLeftLeg
+float BRTlegR, BRLlegR;//BakRightLeg
+float FLTlegR, FLLlegR;//FrontLeftLeg
+float FRTlegR, FRLlegR;//FrontRightLeg
+float time;
+
+boolean animate= false;
+boolean headDown= true;
+boolean tailUp= true;
+boolean RTLegStraight=true;
+boolean RLLegStraight= true;
+boolean LTLegStraight= true;
+boolean LLLegStraight= true;
+boolean TBLegStraight= true;
+boolean BBLegStraight= true;
+boolean BRTLegStraight= true;
+boolean BRLLegStraight= true;
+void drawDragon() {
+  noStroke();
+  fill(#CB6D1B);
+  pushMatrix();
+  translate(Dloc.x, Dloc.y);
+
+  //RightFrontLeg
+  pushMatrix();
+  translate(-40, 3);
+  rotate(FRTlegR);
+  translate(40, -3);
+  quad(-55, 0, -35, 0, -30, 37, -43, 37);//Upper
+  //ellipse(-36.5,37,13,12);
+  pushMatrix();
+  translate(-35, 35);
+  rotate(FRLlegR);
+  translate(35, -35);
+  quad(-30, 37, -43, 37, -55, 50, -50, 55);//Lower
+  ellipse(-36.5, 37, 13, 12);
+    //FrontRightFoot
+  ellipse(-52,50,16,10);//FrontRightFoot
+  popMatrix();
+  popMatrix();
+  
+   //BackRightLeg
+  pushMatrix();
+  translate(15, 20);
+  rotate(FLLlegR);
+  translate(-15, -20);
+  ellipse(15, 20, 30, 40);//TopLeg
+  pushMatrix();
+  translate(25,30);
+  rotate(FLLlegR);
+  translate(-25,-30);
+  quad(25, 30, 35, 35, 15, 50, 5, 45);//LowerLeg
+    //BackRightFoot
+  ellipse(6,50,16,10);//BackRightFoot
+  popMatrix();
+  popMatrix();
+  
+  pushMatrix();
+  //RightWing translate(-25,-5);
+  translate(-25,-5);
+  rotate(TtailR);
+  translate(25,5);
+  quad(-30,-25,-35,-30,25,-105,25,-100);//LeftSkinny
+  triangle(95,-65,25,-105,25,-100);//RightSkinny
+   stroke(#CB6D1B);
+  fill(243,226,126,100);
+  quad(-30,-25,25,-100,15,-45,-20,-20);//LeftBigger
+  triangle(25,-100,15,-45,35,-45);//Middle
+  triangle(25,-100,35,-45,55,-55);
+  triangle(25,-100,55,-55,95,-65);//RightBigger
+  noStroke();
+  popMatrix();
+ fill(243,226,126);
+ 
+  //Body
+        //SpikesLeft to right
+    triangle(-20,-30,-15,-40,-10,-30);
+    triangle(-5,-30,0,-40,5,-30);
+    triangle(10,-30,16,-40,20,-30);
+    triangle(25,-27,32,-37,35,-27);
+    triangle(40,-22,47,-32,50,-22);
+    triangle(55,-16,62,-26,65,-14);
+    //triangle(70,-11,77,-21,80,-11);
+    
+     
+   fill(238,133,38);
+   ellipse(0, 0, 140, 60);//Body
+
+  //LowerNeck
+  pushMatrix();
+  translate(-40, -5);
+  rotate(LneckR);
+  translate(40, 5);
+  quad(-70, 0, -75, -48, -50, -53, 0, 10);
+  //UpperNeck
+  pushMatrix();
+  translate(-62.5, -54);
+  rotate(TneckR);
+  translate(62.5, 54);
+  quad(-50, -53, -75, -48, -75, -85, -55, -90);
+  ellipse(-62.5, -54, 24, 24);
+  //Head
+  pushMatrix();
+  translate(-65, -85);
+  rotate(headR);
+  translate(65, 85);
+  quad(-55, -90, -95, -50, -110, -65, -80, -110);
+  popMatrix();
+  popMatrix();
+  popMatrix();
+
+
+
+  //FrontLeftLeg
+  pushMatrix();
+  translate(-25, 5);
+  rotate(FLTlegR);
+  translate(25, -5);
+  quad(-40, 0, -20, 0, 0, 40, -20, 40);//TopLeg
+  pushMatrix();
+  translate(-11, 40);
+  rotate(FLLlegR);
+  translate(11, -40);
+  quad(-20, 40, 0, 40, -30, 65, -40, 60);//LowerLeg
+    //FrontLeftFoot
+  ellipse(-36,62,20,12);//FrontLeftFoot
+  ellipse(-11, 40, 20, 15);
+  popMatrix();
+  popMatrix();
+
+  //BackLeftLeg
+  pushMatrix();
+  translate(35, 20);
+  rotate(BLTlegR);
+  translate(-35, -20);
+  ellipse(35, 20, 40, 50);//TopLeg
+  pushMatrix();
+  translate(45,27);
+  rotate(BLLlegR);
+  translate(-45,-27);
+  quad(45, 30, 55, 47, 30, 65, 20, 60);//LowerLeg
+    //BackLeftFoot
+  ellipse(22,62,20,12);//BackLeftFoot
+  popMatrix();
+  popMatrix();
+  
+
+  //Tail
+  pushMatrix();
+  translate(50, 0);
+  rotate(LtailR);
+  translate(-50, 0);  
+   fill(243,226,126);
+     //Spikes
+  triangle(70,-11,77,-21,80,-11);
+      triangle(85,-6,92,-16,95,-6);
+    triangle(100,-1,106,-11,110,3);
+    fill(238,133,38);
+  quad(60, -17, 110, 0, 117, 20, 60, 17);//Leftmost
+  pushMatrix();
+  translate(113, 8);
+  rotate(MtailR);
+  translate(-113, -8);
+    //Spikes
+     fill(243,226,126);
+      triangle(115,2,120,-8,125,2);
+    triangle(130,3,135,-7,140,3);
+    triangle(145,3.5,150,-6.5,155,5);
+    fill(238,133,38);
+  quad(117, 20, 110, 0, 150, 0, 150, 15);//MIddle
+  ellipse(113, 10, 20, 20);
+  pushMatrix();
+  translate(147, 6);
+  rotate(RtailR);
+  translate(-147, -6);
+  fill(243,226,126);
+      triangle(160,1,162,-9,170,1);
+      fill(238,133,38);
+  quad(150, 0, 167, -5, 175, 0, 150, 15);///Rightmost
+  ellipse(147, 6, 15, 15);
+  pushMatrix();
+  translate(170,-2.5);
+  rotate(TtailR);
+  translate(-170,2.5);
+  fill(243,226,126);
+   triangle(175,-2,176,-15,185,-12.5);
+     fill(238,133,38);
+  triangle(167, -5, 190, -20, 175, 0);//Tip
+
+  ellipse(170,-2.5,10,10);
+  popMatrix();
+  popMatrix();
+  popMatrix();
+  popMatrix();
+  
+//WINGS
+    fill(#CB6D1B);
+   pushMatrix();
+   rotate(TtailR);
+   
+   //LeftWing
+ quad(-5,-20,-10,-25,50,-100,50,-95);//LeftSkinny
+  triangle(120,-60,50,-100,50,-95);//RightSkinny
+   stroke(#CB6D1B);
+  fill(243,226,126,100);
+  quad(-5,-20,50,-95,40,-40,5,-15);//LeftBigger
+  triangle(50,-95,40,-40,60,-40);//Middle
+  triangle(50,-95,60,-40,80,-50);
+  triangle(50,-95,80,-50,120,-60);//RightBigger
+  
+  popMatrix();
+  
+  popMatrix();
+}
+
+void animate() {
+  //update the dragons global location
+  Dloc.x = Dloc.x + dir.x*time;
+  Dloc.y = Dloc.y + dir.y*time;
+  //AnimateHead
+  if (headR < -3) {
+   headDown = false;
+  } 
+  if (headR > 1) {
+   headDown = true;
+  }
+
+  if (headDown == true) {
+   headR -= .01;
+  } else {
+   headR += .01;
+  }
+  
+  //AnimateNeck
+  if (LneckR < -1) {
+    headDown = false;
+  } 
+  if (LneckR > 0.3) {
+    headDown = true;
+  }
+
+  if (headDown == true) {
+    LneckR -= .01;
+  } else {
+    LneckR += .01;
+  }
+  
+  if (TneckR < -1) {
+    headDown = false;
+  } 
+  if (TneckR > 0.3) {
+    headDown = true;
+  }
+
+  if (headDown == true) {
+    TneckR -= .01;
+  } else {
+    TneckR += .01;
+  }
+
+
+  //AnimateTail
+  if (LtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (LtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    LtailR -= .02;
+  } else {
+    LtailR += .02;
+  }
+
+  //Middle Tail
+  if (MtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (MtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    MtailR -= .02;
+  } else {
+    MtailR += .02;
+  }
+  //Right Tail
+  if (RtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (RtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    RtailR -= .02;
+  } else {
+    RtailR += .02;
+  }
+    //Tip of the Tail
+  if (TtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (TtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    TtailR -= .02;
+  } else {
+    TtailR += .02;
+  }
+  
+  //Top Left Front Leg
+   if (FLTlegR < -radians(30)) {
+    RTLegStraight = false;
+  } 
+  if (FLTlegR > radians(30)) {
+    RTLegStraight = true;
+  }
+
+  if (RTLegStraight == true) {
+    FLTlegR -= .02;
+  } else {
+    FLTlegR += .02;
+  }
+  //Lower Front Right Leg
+    if (FLLlegR < -radians(30)) {
+    RLLegStraight = false;
+  } 
+  if (FLLlegR > radians(30)) {
+    RLLegStraight = true;
+  }
+
+  if (RLLegStraight == true) {
+    FLLlegR -= .02;
+  } else {
+    FLLlegR += .02;
+  }
+
+ //Top Right Front Leg
+   if (FRTlegR < -radians(30)) {
+    LTLegStraight = false;
+  } 
+  if (FRTlegR > radians(30)) {
+    LTLegStraight = true;
+  }
+
+  if (LTLegStraight == true) {
+    FRTlegR -= .02;
+  } else {
+    FRTlegR += .02;
+  }
+  //Lower Front Left Leg
+    if (FRLlegR < -radians(30)) {
+    LLLegStraight = false;
+  } 
+  if (FRLlegR > radians(30)) {
+    LLLegStraight = true;
+  }
+
+  if (LLLegStraight == true) {
+    FRLlegR -= .02;
+  } else {
+    FRLlegR += .02;
+  }
+  //Top Back Left Leg
+      if (BLTlegR < -radians(30)) {
+   TBLegStraight = false;
+  } 
+  if (BLTlegR > radians(30)) {
+    TBLegStraight = true;
+  }
+
+  if (TBLegStraight == true) {
+    BLTlegR -= .02;
+  } else {
+    BLTlegR += .02;
+  }
+   //Bottom Back Left Leg
+      if (BLLlegR < -radians(30)) {
+   BBLegStraight = false;
+  } 
+  if (BLLlegR > radians(30)) {
+    BBLegStraight = true;
+  }
+
+  if (BBLegStraight == true) {
+    BLLlegR -= .02;
+  } else {
+    BLLlegR += .02;
+  }
+    //Top Back Right Leg
+      if (BRTlegR < -radians(30)) {
+   BRTLegStraight = false;
+  } 
+  if (BRTlegR > radians(30)) {
+    BRTLegStraight = true;
+  }
+
+  if (TBLegStraight == true) {
+    BRTlegR += .02;
+  } else {
+    BRTlegR -= .02;
+  }
+   //Bottom Back Right Leg
+      if (BRLlegR < -radians(30)) {
+   BRLLegStraight = false;
+  } 
+  if (BRLlegR > radians(30)) {
+    BRLLegStraight = true;
+  }
+
+  if (BRLLegStraight == true) {
+    BRLlegR += .02;
+  } else {
+    BRLlegR -= .02;
+  }
+}
+void draw() {
+
+  background(#2A5AA5);
+
+  //foreground
+  fill(#74C68C);
+  rect(0, height/2, width, height/2);
+
+  drawDragon();
+  if (animate) {
+    animate();
+  }
+}
+void setup() {
+
+  size(1200, 400);
+  Dloc = new PVector(width*.9, height/2);
+  dir = new PVector(-1, 0);
+  time = 0.5;
+  headR = 1;
+  TneckR = 0;
+  LneckR = .2;
+  LtailR = -.5;
+  MtailR = -.5;
+  RtailR = 0; 
+  TtailR = 0;
+  BLTlegR = 1;
+  BLLlegR = .5;
+  BRLlegR = -.5;
+  BRTlegR =  -1;
+  FLTlegR = .5;
+  FLLlegR = -1;
+  FRTlegR = .5;
+  FRLlegR = 1;
+}
+
+void mousePressed() {
+
+  Dloc.x = width*.9;
+  animate = !animate;
+}
