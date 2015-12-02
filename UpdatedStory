@@ -1,0 +1,1448 @@
+float horizon=355;
+float time=0;
+float castleSize=1;
+float castleMove=0;
+float treeMove=0;
+float towerMove=0;
+float knightMove=0;
+float knightScaler=0.1;
+float swing=0;
+int mouseT=0;
+float ulLeg, urLeg, dlLeg, drLeg;
+boolean horizonGo, timeGo, castleGo, rLegforward, lLegforward, animateKnight, dragonScreen, fightScene;
+float vT=0;
+float xT[];
+float yT[];
+color colorT[];
+color colorTt[];
+float widthTree[];
+float cloudMove=0;
+int numTrees;
+PVector Dloc;
+PVector dir;
+//R=rotation
+//L=lowwer/left
+//T=tip/Top
+//F=front
+//B=back
+float headR, TneckR, LneckR; //HeadandNeck
+float LtailR, MtailR, RtailR, TtailR;//Tail
+float BLTlegR, BLLlegR;//BackLeftLeg
+float BRTlegR, BRLlegR;//BakRightLeg
+float FLTlegR, FLLlegR;//FrontLeftLeg
+float FRTlegR, FRLlegR;//FrontRightLeg
+boolean animateDragon= false;
+boolean headDown= true;
+boolean tailUp= true;
+boolean RTLegStraight=true;
+boolean RLLegStraight= true;
+boolean LTLegStraight= true;
+boolean LLLegStraight= true;
+boolean TBLegStraight= true;
+boolean BBLegStraight= true;
+boolean BRTLegStraight= true;
+boolean BRLLegStraight= true;
+
+void setup() {
+  size(500, 700);
+  background(245);
+  horizonGo=timeGo=castleGo=dragonScreen=fightScene=false;
+  numTrees=20;
+  xT= new float[numTrees];
+  yT= new float[numTrees];
+  colorT= new color[numTrees];
+  colorTt= new color[numTrees];
+  widthTree= new float[numTrees];
+  for (int i=0; i<numTrees; i++) {
+    xT[i]=random (99*i, 101*i);
+    yT[i]=random (70, 110);
+    colorT[i]= color(random(135, 160), random(80, 105), random(35, 55));
+    colorTt[i]= color(random(0, 70), random(180, 230), random(100, 140));
+    widthTree[i]= random(45, 53);
+  }
+  lLegforward=true;
+  rLegforward=false;
+  animateKnight=false;
+  dlLeg=0;
+  ulLeg=0;
+  drLeg=0;
+  urLeg=0;
+  //ADD TO THE DLOC WIDTH VALUE TO MOVE DRAGONS STARTING POSITION RIGHT
+  Dloc = new PVector(width*.9, height/2);
+  dir = new PVector(-0.8, 0);
+  headR = 1;
+  TneckR = 0;
+  LneckR = .2;
+  LtailR = -.5;
+  MtailR = -.5;
+  RtailR = 0; 
+  TtailR = 0;
+  BLTlegR = 1;
+  BLLlegR = .5;
+  BRLlegR = -.5;
+  BRTlegR =  -1;
+  FLTlegR = .5;
+  FLLlegR = -1;
+  FRTlegR = .5;
+  FRLlegR = 1;
+}
+
+void drawDragon() {
+  noStroke();
+  fill(#CB6D1B);
+  pushMatrix();
+  translate(Dloc.x, Dloc.y);
+  //RightFrontLeg
+  pushMatrix();
+  translate(-40, 3);
+  rotate(FRTlegR);
+  translate(40, -3);
+  quad(-55, 0, -35, 0, -30, 37, -43, 37);//Upper
+  //ellipse(-36.5,37,13,12);
+  pushMatrix();
+  translate(-35, 35);
+  rotate(FRLlegR);
+  translate(35, -35);
+  quad(-30, 37, -43, 37, -55, 50, -50, 55);//Lower
+  ellipse(-36.5, 37, 13, 12);
+  //FrontRightFoot
+  ellipse(-52, 50, 16, 10);//FrontRightFoot
+  popMatrix();
+  popMatrix();
+
+  //BackRightLeg
+  pushMatrix();
+  translate(15, 20);
+  rotate(FLLlegR);
+  translate(-15, -20);
+  ellipse(15, 20, 30, 40);//TopLeg
+  pushMatrix();
+  translate(25, 30);
+  rotate(FLLlegR);
+  translate(-25, -30);
+  quad(25, 30, 35, 35, 15, 50, 5, 45);//LowerLeg
+  //BackRightFoot
+  ellipse(6, 50, 16, 10);//BackRightFoot
+  popMatrix();
+  popMatrix();
+
+  pushMatrix();
+  //RightWing translate(-25,-5);
+  translate(-25, -5);
+  rotate(TtailR);
+  translate(25, 5);
+  quad(-30, -25, -35, -30, 25, -105, 25, -100);//LeftSkinny
+  triangle(95, -65, 25, -105, 25, -100);//RightSkinny
+  stroke(#CB6D1B);
+  fill(243, 226, 126, 100);
+  quad(-30, -25, 25, -100, 15, -45, -20, -20);//LeftBigger
+  triangle(25, -100, 15, -45, 35, -45);//Middle
+  triangle(25, -100, 35, -45, 55, -55);
+  triangle(25, -100, 55, -55, 95, -65);//RightBigger
+  noStroke();
+  popMatrix();
+  fill(243, 226, 126);
+  //Body
+  //SpikesLeft to right
+  triangle(-20, -30, -15, -40, -10, -30);
+  triangle(-5, -30, 0, -40, 5, -30);
+  triangle(10, -30, 16, -40, 20, -30);
+  triangle(25, -27, 32, -37, 35, -27);
+  triangle(40, -22, 47, -32, 50, -22);
+  triangle(55, -16, 62, -26, 65, -14);
+  //triangle(70,-11,77,-21,80,-11);
+
+  fill(238, 133, 38);
+  ellipse(0, 0, 140, 60);//Body
+
+  //LowerNeck
+  pushMatrix();
+  translate(-40, -5);
+  rotate(LneckR);
+  translate(40, 5);
+  quad(-70, 0, -75, -48, -50, -53, 0, 10);
+  //UpperNeck
+  pushMatrix();
+  translate(-62.5, -54);
+  rotate(TneckR);
+  translate(62.5, 54);
+  quad(-50, -53, -75, -48, -75, -85, -55, -90);
+  ellipse(-62.5, -54, 24, 24);
+  //Head
+  pushMatrix();
+  translate(-65, -85);
+  rotate(headR);
+  translate(65, 85);
+  quad(-55, -90, -95, -50, -110, -65, -80, -110);
+  popMatrix();
+  popMatrix();
+  popMatrix();
+
+  //FrontLeftLeg
+  pushMatrix();
+  translate(-25, 5);
+  rotate(FLTlegR);
+  translate(25, -5);
+  quad(-40, 0, -20, 0, 0, 40, -20, 40);//TopLeg
+  pushMatrix();
+  translate(-11, 40);
+  rotate(FLLlegR);
+  translate(11, -40);
+  quad(-20, 40, 0, 40, -30, 65, -40, 60);//LowerLeg
+  //FrontLeftFoot
+  ellipse(-36, 62, 20, 12);//FrontLeftFoot
+  ellipse(-11, 40, 20, 15);
+  popMatrix();
+  popMatrix();
+
+  //BackLeftLeg
+  pushMatrix();
+  translate(35, 20);
+  rotate(BLTlegR);
+  translate(-35, -20);
+  ellipse(35, 20, 40, 50);//TopLeg
+  pushMatrix();
+  translate(45, 27);
+  rotate(BLLlegR);
+  translate(-45, -27);
+  quad(45, 30, 55, 47, 30, 65, 20, 60);//LowerLeg
+  //BackLeftFoot
+  ellipse(22, 62, 20, 12);//BackLeftFoot
+  popMatrix();
+  popMatrix();
+
+  //Tail
+  pushMatrix();
+  translate(50, 0);
+  rotate(LtailR);
+  translate(-50, 0);  
+  fill(243, 226, 126);
+  //Spikes
+  triangle(70, -11, 77, -21, 80, -11);
+  triangle(85, -6, 92, -16, 95, -6);
+  triangle(100, -1, 106, -11, 110, 3);
+  fill(238, 133, 38);
+  quad(60, -17, 110, 0, 117, 20, 60, 17);//Leftmost
+  pushMatrix();
+  translate(113, 8);
+  rotate(MtailR);
+  translate(-113, -8);
+  //Spikes
+  fill(243, 226, 126);
+  triangle(115, 2, 120, -8, 125, 2);
+  triangle(130, 3, 135, -7, 140, 3);
+  triangle(145, 3.5, 150, -6.5, 155, 5);
+  fill(238, 133, 38);
+  quad(117, 20, 110, 0, 150, 0, 150, 15);//MIddle
+  ellipse(113, 10, 20, 20);
+  pushMatrix();
+  translate(147, 6);
+  rotate(RtailR);
+  translate(-147, -6);
+  fill(243, 226, 126);
+  triangle(160, 1, 162, -9, 170, 1);
+  fill(238, 133, 38);
+  quad(150, 0, 167, -5, 175, 0, 150, 15);///Rightmost
+  ellipse(147, 6, 15, 15);
+  pushMatrix();
+  translate(170, -2.5);
+  rotate(TtailR);
+  translate(-170, 2.5);
+  fill(243, 226, 126);
+  triangle(175, -2, 176, -15, 185, -12.5);
+  fill(238, 133, 38);
+  triangle(167, -5, 190, -20, 175, 0);//Tip
+
+  ellipse(170, -2.5, 10, 10);
+  popMatrix();
+  popMatrix();
+  popMatrix();
+  popMatrix();
+
+  //WINGS
+  fill(#CB6D1B);
+  pushMatrix();
+  rotate(TtailR);
+  //LeftWing
+  quad(-5, -20, -10, -25, 50, -100, 50, -95);//LeftSkinny
+  triangle(120, -60, 50, -100, 50, -95);//RightSkinny
+  stroke(#CB6D1B);
+  fill(243, 226, 126, 100);
+  quad(-5, -20, 50, -95, 40, -40, 5, -15);//LeftBigger
+  triangle(50, -95, 40, -40, 60, -40);//Middle
+  triangle(50, -95, 60, -40, 80, -50);
+  triangle(50, -95, 80, -50, 120, -60);//RightBigger
+  popMatrix();
+  popMatrix();
+}
+
+void DragonAnimation() {
+  //update the dragons global location
+  Dloc.x = Dloc.x + dir.x;
+  Dloc.y = Dloc.y + dir.y;
+  //AnimateHead
+  if (headR < -3) {
+    headDown = false;
+  } 
+  if (headR > 1) {
+    headDown = true;
+  }
+
+  if (headDown == true) {
+    headR -= .01;
+  } else {
+    headR += .01;
+  }
+
+  //AnimateNeck
+  if (LneckR < -1) {
+    headDown = false;
+  } 
+  if (LneckR > 0.3) {
+    headDown = true;
+  }
+
+  if (headDown == true) {
+    LneckR -= .01;
+  } else {
+    LneckR += .01;
+  }
+
+  if (TneckR < -1) {
+    headDown = false;
+  } 
+  if (TneckR > 0.3) {
+    headDown = true;
+  }
+
+  if (headDown == true) {
+    TneckR -= .01;
+  } else {
+    TneckR += .01;
+  }
+
+
+  //AnimateTail
+  if (LtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (LtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    LtailR -= .02;
+  } else {
+    LtailR += .02;
+  }
+
+  //Middle Tail
+  if (MtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (MtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    MtailR -= .02;
+  } else {
+    MtailR += .02;
+  }
+  //Right Tail
+  if (RtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (RtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    RtailR -= .02;
+  } else {
+    RtailR += .02;
+  }
+  //Tip of the Tail
+  if (TtailR < -radians(30)) {
+    tailUp = false;
+  } 
+  if (TtailR > radians(30)) {
+    tailUp = true;
+  }
+
+  if (tailUp == true) {
+    TtailR -= .02;
+  } else {
+    TtailR += .02;
+  }
+
+  //Top Left Front Leg
+  if (FLTlegR < -radians(30)) {
+    RTLegStraight = false;
+  } 
+  if (FLTlegR > radians(30)) {
+    RTLegStraight = true;
+  }
+
+  if (RTLegStraight == true) {
+    FLTlegR -= .02;
+  } else {
+    FLTlegR += .02;
+  }
+  //Lower Front Right Leg
+  if (FLLlegR < -radians(30)) {
+    RLLegStraight = false;
+  } 
+  if (FLLlegR > radians(30)) {
+    RLLegStraight = true;
+  }
+
+  if (RLLegStraight == true) {
+    FLLlegR -= .02;
+  } else {
+    FLLlegR += .02;
+  }
+
+  //Top Right Front Leg
+  if (FRTlegR < -radians(30)) {
+    LTLegStraight = false;
+  } 
+  if (FRTlegR > radians(30)) {
+    LTLegStraight = true;
+  }
+
+  if (LTLegStraight == true) {
+    FRTlegR -= .02;
+  } else {
+    FRTlegR += .02;
+  }
+  //Lower Front Left Leg
+  if (FRLlegR < -radians(30)) {
+    LLLegStraight = false;
+  } 
+  if (FRLlegR > radians(30)) {
+    LLLegStraight = true;
+  }
+
+  if (LLLegStraight == true) {
+    FRLlegR -= .02;
+  } else {
+    FRLlegR += .02;
+  }
+  //Top Back Left Leg
+  if (BLTlegR < -radians(30)) {
+    TBLegStraight = false;
+  } 
+  if (BLTlegR > radians(30)) {
+    TBLegStraight = true;
+  }
+
+  if (TBLegStraight == true) {
+    BLTlegR -= .02;
+  } else {
+    BLTlegR += .02;
+  }
+  //Bottom Back Left Leg
+  if (BLLlegR < -radians(30)) {
+    BBLegStraight = false;
+  } 
+  if (BLLlegR > radians(30)) {
+    BBLegStraight = true;
+  }
+
+  if (BBLegStraight == true) {
+    BLLlegR -= .02;
+  } else {
+    BLLlegR += .02;
+  }
+  //Top Back Right Leg
+  if (BRTlegR < -radians(30)) {
+    BRTLegStraight = false;
+  } 
+  if (BRTlegR > radians(30)) {
+    BRTLegStraight = true;
+  }
+
+  if (TBLegStraight == true) {
+    BRTlegR += .02;
+  } else {
+    BRTlegR -= .02;
+  }
+  //Bottom Back Right Leg
+  if (BRLlegR < -radians(30)) {
+    BRLLegStraight = false;
+  } 
+  if (BRLlegR > radians(30)) {
+    BRLLegStraight = true;
+  }
+
+  if (BRLLegStraight == true) {
+    BRLlegR += .02;
+  } else {
+    BRLlegR -= .02;
+  }
+}
+
+void flower(int x, int y) {
+  pushMatrix();
+  translate(x, y);
+  scale(0.3);
+  translate(-398, -531/2);
+  noStroke();
+  petal2();
+  petal3();
+  petal4();
+  petal5();
+  petal6();
+  petal1();
+  noStroke();
+  fill(170, 94, 253);
+  ellipse(398, 531/2, 12, 12);
+  popMatrix();
+}
+
+void petal1() {
+  pushMatrix();
+  translate(398, 531/2);
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void petal2() {
+  pushMatrix();
+  translate(398, 531/2);
+  rotate(radians(60));
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void petal3() {
+  pushMatrix();
+  translate(398, 531/2);
+  rotate(radians(120));
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void petal4() {
+  pushMatrix();
+  translate(398, 531/2);
+  rotate(radians(180));
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void petal5() {
+  pushMatrix();
+  translate(398, 531/2);
+  rotate(radians(240));
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void petal6() {
+  pushMatrix();
+  translate(398, 531/2);
+  rotate(radians(300));
+  translate(-398, -531/2);
+  fill(184, 41, 113);
+  stroke(196, 8, 32);
+  beginShape();
+  curveVertex(395, 265);
+  curveVertex(395, 263);
+  curveVertex(393, 254);
+  curveVertex(393, 250);
+  curveVertex(396, 245);
+  curveVertex(402, 244);
+  curveVertex(406, 248);
+  curveVertex(406, 252);
+  curveVertex(404, 258);
+  curveVertex(403, 261);
+  curveVertex(402, 267);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void brick() {
+  bricks(160, 590);
+  bricks(178, 590);
+  bricks(196, 590);
+  bricks(214, 590);
+  bricks(169, 580);
+  bricks(187, 580);
+  bricks(205, 580);
+  bricks(160, 570);
+  bricks(178, 570);
+  bricks(196, 570);
+  bricks(214, 570);
+  bricks(169, 560);
+  bricks(187, 560);
+  bricks(205, 560);
+  bricks(160, 550);
+  bricks(178, 550);
+  bricks(196, 550);
+  bricks(214, 550);
+  bricks(169, 540);
+  bricks(187, 540);
+  bricks(205, 540);
+  bricks(160, 530);
+  bricks(178, 530);
+  bricks(196, 530);
+  bricks(214, 530);
+  bricks(169, 520);
+  bricks(187, 520);
+  bricks(205, 520);
+  bricks(160, 510);
+  bricks(178, 510);
+  bricks(196, 510);
+  bricks(214, 510);
+  bricks(169, 500);
+  bricks(187, 500);
+  bricks(205, 500);
+  bricks(160, 490);
+  bricks(178, 490);
+  bricks(196, 490);
+  bricks(214, 490);
+  bricks(169, 480);
+  bricks(187, 480);
+  bricks(205, 480);
+  bricks(160, 470);
+  bricks(178, 470);
+  bricks(196, 470);
+  bricks(214, 470);
+  bricks(169, 460);
+  bricks(187, 460);
+  bricks(205, 460);
+  bricks(160, 450);
+  bricks(178, 450);
+  bricks(196, 450);
+  bricks(214, 450);
+  bricks(169, 440);
+  bricks(187, 440);
+  bricks(205, 440);
+  bricks(160, 430);
+  bricks(178, 430);
+  bricks(196, 430);
+  bricks(214, 430);
+  bricks(169, 420);
+  bricks(187, 420);
+  bricks(205, 420);
+  bricks(160, 410);
+  bricks(178, 410);
+  bricks(196, 410);
+  bricks(214, 410);
+  bricks(169, 400);
+  bricks(187, 400);
+  bricks(205, 400);
+  bricks(160, 390);
+  bricks(178, 390);
+  bricks(196, 390);
+  bricks(214, 390);
+  bricks(169, 380);
+  bricks(187, 380);
+  bricks(205, 380);
+  bricks(160, 370);
+  bricks(178, 370);
+  bricks(196, 370);
+  bricks(214, 370);
+  bricks(169, 360);
+  bricks(187, 360);
+  bricks(205, 360);
+  bricks(160, 350);
+  bricks(178, 350);
+  bricks(196, 350);
+  bricks(214, 350);
+  bricks(169, 340);
+  bricks(187, 340);
+  bricks(205, 340);
+  bricks(160, 330);
+  bricks(178, 330);
+  bricks(196, 330);
+  bricks(214, 330);
+  bricks(169, 320);
+  bricks(187, 320);
+  bricks(205, 320);
+  bricks(160, 310);
+  bricks(178, 310);
+  bricks(196, 310);
+  bricks(214, 310);
+  bricks(169, 300);
+  bricks(187, 300);
+  bricks(205, 300);
+  bricks(160, 290);
+  bricks(178, 290);
+  bricks(196, 290);
+  bricks(214, 290);
+}
+void bricks(int x, int y) {
+  pushMatrix();
+  translate(x, y);
+  translate(-160, -450);
+  stroke(142, 107, 110);
+  noFill();
+  quad(155, 445, 173, 445, 173, 455, 155, 455);
+  popMatrix();
+}
+
+void greens() {
+  noStroke();
+  fill(142, 148, 122);
+  beginShape();
+  curveVertex(155, 250);
+  curveVertex(178, 260);
+  curveVertex(206, 260);
+  curveVertex(240, 262);
+  curveVertex(232, 278);
+  curveVertex(209, 287);
+  curveVertex(197, 301);
+  curveVertex(193, 324);
+  curveVertex(181, 337);
+  curveVertex(165, 368);
+  curveVertex(158, 390);
+  curveVertex(155, 399);
+  curveVertex(155, 385);
+  curveVertex(155, 372);
+  curveVertex(155, 359);
+  curveVertex(155, 341);
+  curveVertex(155, 324);
+  curveVertex(154, 297);
+  curveVertex(154, 278);
+  curveVertex(154, 260);
+  curveVertex(154, 250);
+  endShape(CLOSE);
+  beginShape();
+  curveVertex(155, 600);
+  curveVertex(164, 583);
+  curveVertex(177, 564);
+  curveVertex(207, 522);
+  curveVertex(216, 501);
+  curveVertex(226, 473);
+  curveVertex(235, 442);
+  curveVertex(238, 428);
+  curveVertex(239, 476);
+  curveVertex(239, 580);
+  curveVertex(240, 600);
+  curveVertex(204, 601);
+  curveVertex(175, 602);
+  curveVertex(155, 602);
+  curveVertex(239, 600);
+  endShape(CLOSE);
+  beginShape();
+  curveVertex(238, 429);
+  curveVertex(225, 418);
+  curveVertex(220, 404);
+  curveVertex(228, 382);
+  curveVertex(227, 362);
+  curveVertex(220, 346);
+  curveVertex(221, 311);
+  curveVertex(230, 299);
+  curveVertex(235, 280);
+  curveVertex(238, 276);
+  curveVertex(239, 308);
+  curveVertex(239, 334);
+  curveVertex(239, 370);
+  curveVertex(239, 398);
+  curveVertex(239, 426);
+  curveVertex(238, 424);
+  endShape(CLOSE);
+}
+
+void tower() {
+  pushMatrix();
+  translate(2300, 100);
+  noStroke();
+  fill(216, 190, 182);
+  quad(155, 250, 240, 250, 240, 600, 155, 600);
+  fill(98, 70, 106);
+  beginShape();
+  curveVertex(143, 189);
+  curveVertex(138, 230);
+  curveVertex(128, 189);
+  curveVertex(169, 195);
+  curveVertex(201, 193);
+  curveVertex(263, 189);
+  curveVertex(241, 251);
+  curveVertex(200, 252);
+  curveVertex(177, 251);
+  curveVertex(161, 251);
+  curveVertex(148, 236);
+  curveVertex(160, 254);
+  curveVertex(150, 250);
+  curveVertex(146, 246);
+  curveVertex(125, 211);
+  endShape();
+  fill(244, 216, 194);
+  quad(121, 113, 267, 113, 263, 190, 128, 190);
+  fill(139, 107, 171);
+  triangle(112, 116, 194, 17, 276, 115);
+  fill(179, 129, 130);
+  ellipse(194, 20, 20, 10);
+  triangle(187, 20, 194, -60, 201, 20);
+  fill(217, 216, 166);
+  ellipse(194, -10, 16, 16);
+  ellipse(194, -22, 10, 10);
+  fill(179, 129, 130);
+  quad(160, 60, 228, 60, 240, 74, 148, 74);
+  fill(194, 112, 94);
+  quad(141, 130, 246, 130, 247, 179, 140, 179);
+  fill(133, 56, 89);
+  quad(127, 190, 264, 190, 264, 200, 127, 200);
+  quad(145, 133, 242, 133, 243, 175, 144, 175);
+  quad(127, 200, 141, 200, 162, 251, 148, 251);
+  quad(249, 200, 263, 200, 243, 251, 230, 252);
+  quad(160, 200, 174, 200, 189, 252, 178, 252);
+  quad(215, 200, 229, 200, 217, 252, 207, 252);
+  quad(192, 200, 200, 200, 200, 252, 192, 252);
+  fill(203, 138, 138);
+  quad(147, 250, 244, 250, 242, 260, 149, 260);
+  brick();
+  greens();
+  flower(190, 551);
+  flower(180, 580);
+  flower(220, 540);
+  flower(225, 520);
+  flower(230, 493);
+  flower(220, 590);
+  flower(230, 470);
+  flower(214, 566);
+  flower(237, 576);
+  flower(236, 554);
+  flower(192, 598);
+  flower(178, 285);
+  flower(214, 279);
+  flower(158, 375);
+  flower(238, 266);
+  flower(198, 266);
+  flower(175, 266);
+  flower(159, 287);
+  flower(197, 291);
+  flower(188, 312);
+  flower(179, 323);
+  flower(171, 309);
+  flower(161, 328);
+  flower(169, 352);
+  flower(239, 292);
+  flower(229, 311);
+  flower(233, 329);
+  flower(224, 339);
+  flower(229, 354);
+  flower(236, 375);
+  flower(228, 400);
+  flower(238, 421);
+  flower(199, 577);
+  popMatrix();
+}
+
+void cloud(float cx) {
+  fill(225, 215, 225);
+  noStroke();
+  ellipse(cx+81, 73, 40, 40);
+  ellipse(cx+48, 82, 42, 42);
+  ellipse(cx+103, 117, 180, 70);
+  ellipse(cx+106, 82, 20, 20);
+  ellipse(cx+30, 100, 24, 24);
+  ellipse(cx+125, 80, 24, 20);
+  ellipse(cx+140, 77, 28, 25);
+  ellipse(cx+150, 83, 25, 20);
+  ellipse(cx+170, 95, 30, 25);
+}
+
+void tree(float x, float y, float wT, color cT, color cTt) {
+  stroke(40, 40, 40);
+  strokeWeight(1);
+  fill(cT);
+  rect(x, y, wT, height-y);
+  fill(cTt);
+  triangle(x-wT, y, x+2*wT, y, x+wT/2, y-4*wT);
+}
+
+void castle() {
+  pushMatrix();
+  translate(250, 350);
+  fill(#CEC0E8);//DarkTan
+  strokeWeight(.1);
+  stroke(0);
+  scale(12);
+  rect(-7, -3, 14, 8);//CastleBody
+  fill(#A7735F);//Brown
+  rect(-2, 0, 4, 5, 50, 50, 0, 0);//Door
+  //WindowsAboveDoor
+  pushMatrix();
+  scale(.8);
+  translate(0, -.75);
+  rect(-2.75, -1.5, 1, 1.5, 50, 50, 0, 0);//Window1
+  rect(-1.25, -2, 1, 1.5, 50, 50, 0, 0);//Window2
+  rect(.25, -2, 1, 1.5, 50, 50, 0, 0);//Window3
+  rect(1.75, -1.5, 1, 1.5, 50, 50, 0, 0);//Window4
+  popMatrix();
+
+  //TopTower
+  fill(#CEC0E8);//DarkTan
+  rect(-2, -8, 4, 5);
+  fill(#EDBD0C);//RoyalBlue
+  quad(2, -8, -2, -8, -1, -11, 1, -11);
+  fill(#C49E16);//DarkGold
+  triangle(-.6, -11, 0, -13, .6, -11);
+  stroke(.01);
+  strokeWeight(.1);
+  line(0, -13, 0, -15);//FlagPole
+  line(0, 0, 0, 4.9);//Door
+  //noStroke();
+  fill(255, 0, 0);//Red
+  triangle(0, -14, 0, -15, 2, -14.5);//Flag
+  fill(#A7735F);//Brown
+  //TopWindow
+  beginShape();
+  vertex(-.5, -5);
+  vertex(-.5, -6);
+  vertex(0, -6.5);
+  vertex(.5, -6);
+  vertex(.5, -5);
+  endShape(CLOSE);
+  //RightTower
+  fill(#D9CEED);
+  drawjagged(2.5, -2.2);
+  fill(#D9CEED);//LightTan
+  quad(6.5, 0, 8.5, 0, 9.5, 5, 5.5, 5);//Lower
+  arc(7.5, 5, 4, 1.25, 0, PI);
+  quad(8.5, 0, 6.5, 0, 6, -4, 9, -4);//Upper
+  fill(#EDBD0C);//RoyalBlue
+  triangle(9, -4, 6, -4, 7.5, -9);//Triangle
+  strokeWeight(.1);
+  stroke(0);
+  line(7.5, -9, 7.5, -11);//FlagPole
+  //noStroke();
+  fill(255, 0, 0);//Red
+  triangle(7.5, -10, 7.5, -11, 9.5, -10.5);//Flag
+  //TopRightWindow
+  fill(#A7735F);//Brown
+  beginShape();
+  vertex(7, -1);
+  vertex(7, -2);
+  vertex(7.5, -2.5);
+  vertex(8, -2);
+  vertex(8, -1);
+  endShape(CLOSE);
+  rect(7, 3, 1, 2.5, 60, 60, 0, 0);//RightDoor
+
+  //LeftTower
+  fill(#D9CEED);
+  drawjagged(-7.5, -2.2);
+  fill(#D9CEED);//LightTan
+  quad(-6.5, 0, -8.5, 0, -9.5, 5, -5.5, 5);//Lower
+  arc(-7.5, 5, 4, 1.25, 0, PI);
+  quad(-8.5, 0, -6.5, 0, -6, -4, -9, -4);//Upper
+  fill(#EDBD0C);//RoyalBlue
+  triangle(-9, -4, -6, -4, -7.5, -9);//Triangle
+  strokeWeight(.1);
+  stroke(0);
+  line(-7.5, -9, -7.5, -11);//FlagPole
+  fill(255, 0, 0);//Red
+  triangle(-7.5, -10, -7.5, -11, -5.5, -10.5);//Flag
+  fill(#D9CEED);
+  drawjagged(-2.5, -3);
+  fill(#C49E16);//DarkGold
+  drawjagged(-2.5, -7);
+  pushMatrix();
+  scale(.7);
+  drawjagged(8.2, -5.5);
+  drawjagged(-13.2, -5.5);
+  popMatrix();
+  //TopLefttWindow
+  fill(#A7735F);//Brown
+  beginShape();
+  vertex(-7, -1);
+  vertex(-7, -2);
+  vertex(-7.5, -2.5);
+  vertex(-8, -2);
+  vertex(-8, -1);
+  endShape(CLOSE);
+  rect(-8, 3, 1, 2.5, 60, 60, 0, 0);//LefttDoor
+
+  //RightSkinnyTower
+  fill(#D9CEED);//LightTan
+  rect(3.5, -1, 1.5, 6.5);
+  fill(#EDBD0C);//RoyalBlue
+  triangle(2.7, -1, 4.25, -6, 5.7, -1);
+  strokeWeight(.1);
+  stroke(0);
+  line(4.25, -6, 4.25, -8);//FlagPole
+  //noStroke();
+  fill(255, 0, 0);
+  triangle(4.25, -7, 4.25, -8, 6.25, -7.5);//Flag
+
+  //LeftSkinnyTower
+  fill(#D9CEED);//LightTan
+  rect(-5, -1, 1.5, 6.5);
+  fill(#EDBD0C);//RoyalBlue
+  triangle(-2.7, -1, -4.25, -6, -5.7, -1);
+  strokeWeight(.1);
+  stroke(0);
+  line(-4.25, -6, -4.25, -8);//FlagPole
+  fill(255, 0, 0);//Red
+  triangle(-4.25, -7, -4.25, -8, -2.25, -7.5);//Flag
+  popMatrix();
+}
+
+
+void drawjagged(float xx, float yy) {
+  pushMatrix();
+  translate(xx, yy);
+  beginShape();
+  vertex(0, 0);
+  vertex(0, -1.5);
+  vertex(1, -1.5);
+  vertex(1, -1);
+  vertex(2, -1);
+  vertex(2, -1.5);
+  vertex(3, -1.5);
+  vertex(3, -1);
+  vertex(4, -1);
+  vertex(4, -1.5);
+  vertex(5, -1.5);
+  vertex(5, 0);
+  endShape(CLOSE);
+  popMatrix();
+}
+
+void knightAnimation() {
+  if (lLegforward) {
+    ulLeg+=0.4;
+    dlLeg-=0.4;
+  } else {
+    ulLeg-=0.4;
+    dlLeg+=0.4;
+  }
+  if (rLegforward) {
+    urLeg+=0.4;
+    drLeg-=0.4;
+  } else {
+    urLeg-=0.4;
+    drLeg+=0.4;
+  }
+  if (ulLeg>18) {
+    lLegforward=false;
+  }
+  if (ulLeg<-10) {
+    lLegforward=true;
+  }
+  if (urLeg<-18) {
+    rLegforward=true;
+  }
+  if (urLeg>10) {
+    rLegforward=false;
+  }
+}
+
+void knight() {
+  pushMatrix();
+  translate(400-knightMove*1.4, 350+treeMove*1.02);
+  scale(knightScaler);
+  translate(-250, -150);
+  strokeWeight(3);
+  stroke(0);
+  pushMatrix();
+  translate(600, 0);
+  fill(189, 190, 192);
+
+
+  pushMatrix();
+  translate(-363, 215);
+  rotate(radians(10));
+  translate(363, -215);
+
+  arc(-363, 220, 70, 140, radians(195), radians(350));
+  strokeWeight(5);
+  line(-363, 240, -383, 220);
+  popMatrix();
+
+  beginShape(); //torso
+  strokeWeight(3);
+  vertex(-450, 240);
+  vertex(-430, 280);
+  vertex(-400, 330);
+  vertex(-290, 330);
+  vertex(-300, 230);
+  vertex(-450, 240);
+  endShape();
+
+  beginShape(); //right pec
+  stroke(0);
+  strokeWeight(3);
+  noFill();
+  vertex(-430, 280);
+  vertex(-400, 300);
+  vertex(-370, 290);
+  vertex(-360, 270);
+  endShape();
+
+  beginShape(); //left pec
+  vertex(-295, 290);
+  vertex(-320, 295);
+  vertex(-340, 275);
+  endShape();
+
+  fill(189, 190, 192);
+  beginShape(); //left arm
+  strokeWeight(3);
+  vertex(-300, 230);
+  vertex(-296, 260);
+  vertex(-240, 270);
+  vertex(-230, 230);
+  endShape(CLOSE);
+
+  //shield
+  ellipse(-240, 260, 50, 200);
+  noFill();
+  arc(-220, 260, 50, 200, radians(115), radians(245));
+  fill(189, 190, 192); 
+  ellipse(-255, 260, 8, 8);
+  ellipse(-252, 220, 8, 8);
+  ellipse(-245, 180, 8, 8);
+  ellipse(-252, 300, 8, 8);
+  ellipse(-245, 340, 8, 8);
+  triangle(-220, 265, -220, 255, -190, 260);
+
+  pushMatrix();
+  translate(-330, 350);
+  rotate(radians(ulLeg));
+  translate(330, -350);
+  beginShape(); //his left leg
+  fill(189, 190, 192);
+  vertex(-300, 350);
+  vertex(-280, 420);
+  vertex(-310, 440);
+  vertex(-330, 350);
+  endShape();
+
+  pushMatrix();
+  translate(-300, 445);
+  rotate(radians(dlLeg));
+  translate(300, -445);
+  beginShape(); //his left lower leg
+  vertex(-310, 440);
+  vertex(-280, 450);
+  vertex(-285, 500);
+  vertex(-320, 520);
+  endShape(CLOSE);
+
+  beginShape(); //his left foot
+  vertex(-285, 500);
+  vertex(-320, 520);
+  vertex(-220, 520);
+  endShape(CLOSE);
+  popMatrix();
+
+  beginShape(); //his left leg knee
+  vertex(-280, 420);
+  vertex(-310, 440);
+  vertex(-280, 450);
+  vertex(-260, 430);
+  endShape(CLOSE);
+  popMatrix();
+
+  pushMatrix();
+  translate(-365, 350);
+  rotate(radians(urLeg));
+  translate(365, -350);
+  beginShape(); //his right leg
+  vertex(-350, 350);
+  vertex(-380, 420);
+  vertex(-410, 430);
+  vertex(-390, 350);
+  endShape();
+
+  pushMatrix();
+  translate(-380, 430);
+  rotate(radians(drLeg));
+  translate(380, -430);
+  beginShape(); //right lower leg
+  vertex(-410, 430);
+  vertex(-380, 450);
+  vertex(-430, 500);
+  vertex(-460, 510);
+  endShape(CLOSE);
+
+  beginShape(); //right foot
+  vertex(-430, 500);
+  vertex(-460, 510);
+  vertex(-460, 520);
+  vertex(-380, 520);
+  endShape(CLOSE);
+  popMatrix();
+
+  beginShape(); //right leg knee
+  vertex(-380, 420);
+  vertex(-410, 430);
+  vertex(-380, 450);
+  vertex(-360, 440);
+  endShape(CLOSE);
+  popMatrix();
+
+  beginShape(); //waist
+  vertex(-400, 330);
+  vertex(-290, 330);
+  vertex(-275, 370);
+  vertex(-415, 370);
+  endShape(CLOSE);
+
+
+  fill(189, 190, 192);
+  strokeWeight(3);
+  pushMatrix();
+  translate(-435, 285);
+  rotate(radians(swing));
+  translate(230, -285);
+  //his right arm
+  quad(-295, 300, -295, 270, -245, 240, -225, 280);
+  pushMatrix();
+  translate(-295, 332);
+  rotate(radians(-5));
+  translate(295, -332);
+  quad( -280, 292, -270, 320, -275, 325, -290, 292);
+  sword(-465, 25);
+  fill(189, 190, 192);
+  strokeWeight(2);
+  stroke(0);
+  ellipse(-300, 332, 40, 10); //fingers
+  ellipse(-300, 324, 40, 10);
+  ellipse(-300, 316, 40, 10);
+  ellipse(-300, 308, 40, 10);
+  popMatrix();
+  popMatrix();
+
+  beginShape(); //head
+
+  vertex(-400, 190);
+  vertex(-390, 240);
+  vertex(-350, 260);
+  vertex(-325, 200);
+  vertex(-340, 215);
+  endShape(CLOSE);
+  ellipse(-400, 190, 15, 20);
+  popMatrix();
+  popMatrix();
+}
+
+void sword( float sx, float sy) {
+
+  pushMatrix();
+  translate(sx, sy);
+
+
+  //handle
+  noStroke();
+  smooth();
+  fill(142, 90, 24);
+  pushMatrix();
+  translate(150, 250);
+  rotate(radians(-12));
+  translate(-150, -250);
+  rect(150, 250, 20, 80);
+  fill(250, 177, 64);
+  ellipse(160, 330, 40, 20);
+
+  fill(159, 229, 254);
+  quad(140, 250, 140, 50, 160, 20, 160, 250);
+
+  fill(118, 201, 234);
+  quad( 160, 250, 160, 20, 180, 50, 180, 250);
+
+  fill(250, 177, 64);
+  ellipse(160, 250, 90, 20);
+  popMatrix();
+  popMatrix();
+}
+
+void drawBrick(float xp, float yp) {
+  pushMatrix();
+  // noStroke();
+  translate(xp, yp);
+  fill(#C0A2F7, 255);
+  rect(0, 0, 1, .6, 5, 5, 5, 5);
+  popMatrix();
+}
+
+void mouseClicked() {
+  if (time==0) {
+    timeGo=true;
+    horizonGo=true;
+    castleGo=true;
+  }
+  if (mouseT==0 && time>48) {
+    mouseT=mouseT+1;
+    dragonScreen=true;
+  }
+  if (mouseT>=2) {
+    animateDragon=true;
+    Dloc.x = Dloc.x+18;
+    mouseT++;
+  }
+}
+void mousePressed() {
+  if (mouseT==1 && dragonScreen) {
+    mouseT=mouseT+1;
+    fightScene=true;
+  }
+}
+
+void draw() {
+  smooth();
+  background(120-3*time, 184-3*time, 256-3*time);
+  cloud(cloudMove);
+  pushMatrix();
+  translate(-vT, 0);
+  for (int i=0; i<numTrees; i++) {
+    tree(xT[i], yT[i]+treeMove, widthTree[i], colorT[i], colorTt[i]);
+  }
+  popMatrix();
+  fill(40, 130, 100);
+  stroke(0, 100, 0);
+  strokeWeight(2);
+  rect(0, height-horizon, width, horizon);
+  pushMatrix();
+  translate(400-castleMove, 360);
+  scale(castleSize);
+  translate(-400, -360);
+  castle();
+  popMatrix();
+  pushMatrix();
+  translate(towerMove, 0);
+  tower();
+  popMatrix();
+  knight();
+  if (animateKnight) {
+    knightAnimation();
+  }
+  if (timeGo) {
+    time+=0.02;
+    cloudMove+=0.05;
+  }
+  if (time>5 && time<9) {
+    horizonGo=castleGo=false;
+    knightMove++;
+    castleMove+=1.5;
+    vT++;
+    towerMove--;
+  } else if (time>9 && time<47) {
+    animateKnight=true;
+    vT++;
+    towerMove--;
+  } else if (time>47 && time<50) {
+    animateKnight=false;
+  }
+  if (horizonGo) {
+    horizon--;
+    treeMove+=0.6;
+  }
+  if (castleGo) {
+    castleSize+=0.02;
+    knightScaler+=0.001;
+  }
+  if (dragonScreen) {
+    fill(random(40, 130), 0, 0);
+    rect(0, 0, 500, 700);
+  }
+  if (fightScene) {
+    fill (80, 10, 90);
+    rect(0, 0, 500, 400);
+    fill (0, 70, 10);
+    rect(0, 400, 500, 300);
+    drawDragon();
+    pushMatrix();
+    translate(0, -200);
+    knight();
+    popMatrix();
+  }  
+  if (animateDragon) {
+    DragonAnimation();
+  }
+  if (Dloc.x>600) {
+    dir = new PVector(4, 0);
+  }
+  if (mouseT>2 && mouseT%2==1) {
+    swing=45;
+  } else {
+    swing=0;
+  }
+  if (Dloc.x<300) {
+    rect(0,0,500,700) ;
+  }
+  println (time);
+  println (mouseT);
+}
