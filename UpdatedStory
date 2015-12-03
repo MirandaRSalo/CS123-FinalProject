@@ -5,9 +5,14 @@ float castleMove=0;
 float treeMove=0;
 float towerMove=0;
 float knightMove=0;
+float moveKnightLeft=0;
 float knightScaler=0.1;
 float swing=0;
+float slideDragUp=0;
+float towerShrinker=1;
+float slideTowerUp=0;
 int mouseT=0;
+float knightDrop=0;
 float ulLeg, urLeg, dlLeg, drLeg;
 boolean horizonGo, timeGo, castleGo, rLegforward, lLegforward, animateKnight, dragonScreen, fightScene;
 float vT=0;
@@ -44,6 +49,7 @@ boolean BRTLegStraight= true;
 boolean BRLLegStraight= true;
 
 void setup() {
+  frameRate(160);
   size(500, 700);
   background(245);
   horizonGo=timeGo=castleGo=dragonScreen=fightScene=false;
@@ -55,7 +61,7 @@ void setup() {
   widthTree= new float[numTrees];
   for (int i=0; i<numTrees; i++) {
     xT[i]=random (99*i, 101*i);
-    yT[i]=random (70, 110);
+    yT[i]=random (80, 130);
     colorT[i]= color(random(135, 160), random(80, 105), random(35, 55));
     colorTt[i]= color(random(0, 70), random(180, 230), random(100, 140));
     widthTree[i]= random(45, 53);
@@ -822,9 +828,156 @@ void greens() {
   endShape(CLOSE);
 }
 
+void stillDragon() {
+  pushMatrix();
+  translate(2100, 800-slideDragUp);
+  scale(1.5/towerShrinker);
+  translate(0,-700);
+  pushMatrix();
+  translate(-180, 240);
+  fill(#CB6D1B);
+  stroke(#CB6D1B);
+
+  quad(255, 130, 250, 125, 310, 40, 310, 45);//LeftSkinny
+  triangle(380, 90, 310, 40, 310, 45);//RightSkinny
+
+  fill(243, 226, 126, 100);
+  quad(255, 130, 310, 45, 300, 110, 265, 135);//LeftBigger
+  triangle(310, 45, 300, 110, 320, 110);//Middle
+  triangle(310, 45, 320, 110, 340, 100);
+  triangle(310, 45, 340, 100, 380, 90);//RightBigger
+  popMatrix();
+  noStroke();
+  fill(238, 133, 38);
+  //DAYTON YOU ADDED THIS QUAD
+  quad(228,245,245,255,270,330,250,330);
+  //THE ONE RIGHT HERE
+  pushMatrix();
+  scale(0.7);
+  fill(238, 133, 38);
+  pushMatrix();
+  translate(-45, 570);
+  rotate(radians(-20));
+  translate(50, -565);
+  ellipse(-50, 565, 90, 60);
+  popMatrix();
+  ellipse(0, 555, 100, 90);
+  //head
+  quad(50, 545, 85, 535, 105, 595, 24, 592);
+  //neck
+  ellipse(210, 560, 300, 125);
+  //body
+  quad(245, 527, 320, 500, 385, 562, 315, 596);
+  arc(350, 487, 120, 200, -PI/4, PI/4);
+  pushMatrix();
+  translate(370, 550);
+  rotate(radians(-40));
+  translate(-368, -550);
+  arc( 368, 550, 88, 40, -PI/4, PI);
+  popMatrix();
+  pushMatrix();
+  translate(360, 410);
+  rotate(radians(55));
+  translate(-380, -420);
+  arc(380, 420, 120, 50, -5*PI/6, PI/6);
+  popMatrix();
+  quad(320, 500, 350, 453, 400, 453, 385, 562);
+  fill(155, 157, 197);
+  pushMatrix();
+  translate(326, 458);
+  rotate(radians(28));
+  translate(-320, -453);
+  arc(320, 453, 40, 95, -PI/9, PI/4);
+  popMatrix();
+  //tail
+  noStroke();
+  fill(243, 226, 126);
+  triangle(-80, 558, -78, 528, -60, 544);
+  //horn
+  triangle(0, 510, 10, 490, 20, 513);
+  triangle(-30, 518, -23, 490, -10, 510);
+  triangle(30, 520, 47, 510, 46, 536);
+  triangle(60, 543, 62, 520, 76, 534);
+  triangle(86, 504, 101, 518, 84, 526);
+  triangle(116, 492, 130, 508, 112, 513);
+  triangle(147, 485, 160, 502, 142, 505);
+  triangle(179, 481, 190, 498, 172, 500);
+  triangle(210, 480, 220, 498, 202, 498);
+  triangle(242, 482, 250, 500, 232, 498);
+  triangle(273, 484, 280, 504, 262, 501);
+  triangle(299, 486, 310, 505, 292, 508);
+  triangle(320, 480, 335, 481, 322, 499);
+  triangle(334, 457, 350, 455, 341, 473);
+  triangle(335, 437, 344, 425, 350, 443);
+
+  //spikes
+  triangle(85, 595, 84, 602, 70, 594);
+  triangle(83, 601, 82, 608, 68, 600);
+  triangle(81, 607, 80, 614, 66, 606);
+  //frontclaws
+  triangle(219, 595, 218, 602, 204, 594);
+  triangle(218, 601, 217, 608, 203, 600);
+  triangle(216, 607, 215, 614, 201, 606);
+  //backclaws
+  fill(246, 214, 2);
+  arc(0, 540, 60, 30, 3*PI/2, 2*PI);
+  //ear
+  fill(182, 25, 33);
+  pushMatrix();
+  translate(-75, 570);
+  rotate(radians(38));
+  translate(90, -561);
+  ellipse(-90, 561, 10, 20);
+  popMatrix();
+  //nostril
+  fill(205, 109, 0);
+  pushMatrix();
+  translate(150, 595);
+  rotate(radians(-30));
+  translate(-150, -600);
+  ellipse(150, 600, 70, 40);
+  popMatrix();
+  ellipse(115, 605, 40, 30);
+  quad(105, 594, 108, 618, 80, 615, 85, 595);
+  //front leg
+  ellipse(300, 590, 90, 60);
+  ellipse(260, 600, 50, 40);
+  quad(240, 590, 243, 615, 215, 615, 220, 595);
+  //backleg
+  stroke(0);
+  noFill();
+  arc(-20, 535, 25, 25, PI/3, PI);
+  //eyelid
+  arc(-60, 570, 90, 50, 0, 2*PI/3);
+  //mouth
+  line(-30, 529, -10, 520);
+  //eyebrow
+  fill(#CB6D1B);
+  stroke(#CB6D1B);
+  pushMatrix();
+  translate(155, 560);
+  scale(1.5);
+  quad(-5, -20, -10, -25, 50, -100, 50, -95);//LeftSkinny
+  triangle(120, -60, 50, -100, 50, -95);//RightSkinny
+
+  fill(243, 226, 126, 100);
+  quad(-5, -20, 50, -95, 40, -40, 5, -15);//LeftBigger
+  triangle(50, -95, 40, -40, 60, -40);//Middle
+  triangle(50, -95, 60, -40, 80, -50);
+  triangle(50, -95, 80, -50, 120, -60);//RightBigger
+  popMatrix();
+  popMatrix();
+  popMatrix();
+  //LeftWing
+}
+
 void tower() {
   pushMatrix();
-  translate(2300, 100);
+  translate(2300, 100-slideTowerUp); 
+  pushMatrix();
+  translate(0, 700);
+  scale(1.5/towerShrinker);
+  translate(0, -700);
   noStroke();
   fill(216, 190, 182);
   quad(155, 250, 240, 250, 240, 600, 155, 600);
@@ -905,6 +1058,7 @@ void tower() {
   flower(228, 400);
   flower(238, 421);
   flower(199, 577);
+  popMatrix();
   popMatrix();
 }
 
@@ -1111,7 +1265,7 @@ void knightAnimation() {
 
 void knight() {
   pushMatrix();
-  translate(400-knightMove*1.4, 350+treeMove*1.02);
+  translate(400-knightMove*1.4-moveKnightLeft, 350+treeMove*1.02+knightDrop);
   scale(knightScaler);
   translate(-250, -150);
   strokeWeight(3);
@@ -1384,6 +1538,10 @@ void draw() {
   pushMatrix();
   translate(towerMove, 0);
   tower();
+  pushMatrix();
+  translate(210, 295);
+  stillDragon();
+  popMatrix();
   popMatrix();
   knight();
   if (animateKnight) {
@@ -1405,6 +1563,12 @@ void draw() {
     towerMove--;
   } else if (time>47 && time<50) {
     animateKnight=false;
+    knightScaler=knightScaler/1.008;
+    knightDrop+=0.8;
+    moveKnightLeft+=0.64;
+    towerShrinker+=0.005;
+    slideDragUp+=1.2;
+    slideTowerUp+=0.63;
   }
   if (horizonGo) {
     horizon--;
@@ -1425,7 +1589,7 @@ void draw() {
     rect(0, 400, 500, 300);
     drawDragon();
     pushMatrix();
-    translate(0, -200);
+    translate(50, -240);
     knight();
     popMatrix();
   }  
@@ -1440,7 +1604,7 @@ void draw() {
   } else {
     swing=0;
   }
-  if (Dloc.x<300) {
+  if (Dloc.x<205) {
     rect(0,0,500,700) ;
   }
   println (time);
