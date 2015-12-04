@@ -11,6 +11,12 @@ float swing=0;
 float slideDragUp=0;
 float towerShrinker=1;
 float slideTowerUp=0;
+float posTower=2300;
+float posKnightX=400;
+float posKnightY=350;
+float knightDownVel=0;
+float knightRightVel=0;
+float towerVel=0;
 int mouseT=0;
 float knightDrop=0;
 float ulLeg, urLeg, dlLeg, drLeg;
@@ -49,7 +55,7 @@ boolean BRTLegStraight= true;
 boolean BRLLegStraight= true;
 
 void setup() {
-  frameRate(160);
+  frameRate(140);
   size(500, 700);
   background(245);
   horizonGo=timeGo=castleGo=dragonScreen=fightScene=false;
@@ -91,6 +97,82 @@ void setup() {
   FLLlegR = -1;
   FRTlegR = .5;
   FRLlegR = 1;
+}
+
+void drawAngryFace() {
+  noStroke();
+  fill(#E37310);
+  quad(120, 480, 380, 480, 390, 700, 110, 700);
+
+
+  fill(238, 133, 38);
+
+
+  ellipse(250, 300, 450, 470);//Head
+  ellipse(250, 500, 300, 300);//Snout
+
+  pushMatrix();
+  noFill();
+  stroke(0);
+  strokeWeight(1);
+  arc(250, 450, 200, 100, 6*PI/5, 2*PI - PI/5);//SnoutLineBottom
+  arc(250, 420, 160, 100, 6*PI/5, 2*PI - PI/5);//SnoutLineTop
+  arc(250, 600, 210, 50, 0, PI);
+  popMatrix();
+  noStroke();
+  fill(243, 226, 126);
+
+  //Horns
+  pushMatrix();
+  translate(120, 160);
+  rotate(-3*PI/4);
+  fill(246, 214, 2);
+  arc(0, 0, 300, 150, 3*PI/2, 2*PI);
+
+  popMatrix();//Right Horn 
+  pushMatrix();
+  translate(380, 160);
+  rotate(-PI/4);
+  fill(246, 214, 2);
+  arc(0, 0, 300, 150, 0, PI/2);
+  popMatrix();
+  fill(243, 226, 126);
+  triangle(210, 110, 250, 20, 290, 110);//HeadSpike
+  arc(250, 110, 80, 20, 0, PI);
+  triangle(210, 410, 250, 320, 290, 410);//NoseSpike
+  arc(250, 410, 80, 20, 0, PI);
+  //Eyes
+  fill(255);
+  ellipse(150, 300, 100, 60);//LeftEyeWhite
+  ellipse(350, 300, 100, 60);//RightEyeWhite
+  fill(0);
+  ellipse(150, 300, 60, 60);//RightEyePupil
+  ellipse(350, 300, 60, 60);//RightEyePupil
+  //Nostrils
+  pushMatrix();
+  translate(160, 540);
+  rotate(PI/4);
+  translate(-160, -540);
+  fill(#E37310);
+  ellipse(150, 530, 110, 70);//Behind
+  fill(182, 25, 33);
+  ellipse(160, 540, 100, 60);//LeftNostirl
+  popMatrix();
+  pushMatrix();
+  translate(340, 540);
+  rotate(-PI/4);
+  translate(-340, -540);
+  fill(#E37310);
+  ellipse(350, 530, 110, 70);//Behind
+  fill(182, 25, 33);
+  ellipse(340, 540, 100, 60);//RightNostil
+  popMatrix();
+
+  //EyeBrows
+  strokeWeight(10);
+  stroke(0);
+  line(325, 260, 380, 220);//RightEyebrow
+  line(175, 260, 120, 220);//LeftEyebrow
 }
 
 void drawDragon() {
@@ -135,7 +217,7 @@ void drawDragon() {
   pushMatrix();
   //RightWing translate(-25,-5);
   translate(-25, -5);
-  rotate(TtailR);
+  rotate(-TtailR);
   translate(25, 5);
   quad(-30, -25, -35, -30, 25, -105, 25, -100);//LeftSkinny
   triangle(95, -65, 25, -105, 25, -100);//RightSkinny
@@ -179,7 +261,56 @@ void drawDragon() {
   translate(-65, -85);
   rotate(headR);
   translate(65, 85);
-  quad(-55, -90, -95, -50, -110, -65, -80, -110);
+  pushMatrix();
+  translate(-76, -91);
+  scale(.45);
+  translate(0, -555);
+  fill(238, 133, 38);
+  pushMatrix();
+  translate(-45, 570);
+  rotate(radians(-20));
+  translate(50, -565);
+  ellipse(-50, 565, 90, 60);
+  popMatrix();
+  ellipse(0, 555, 100, 90);
+  //head
+  noStroke();
+  fill(243, 226, 126);
+  triangle(-80, 558, -78, 528, -60, 544);
+  //horn
+  triangle(0, 510, 10, 490, 20, 513);
+  triangle(-30, 518, -23, 490, -10, 510);
+  triangle(30, 520, 47, 510, 46, 536);
+  //scales
+  fill(246, 214, 2);
+  arc(0, 540, 60, 30, 3*PI/2, 2*PI);
+  //ear
+  fill(182, 25, 33);
+  pushMatrix();
+  translate(-75, 570);
+  rotate(radians(38));
+  translate(90, -561);
+  ellipse(-90, 561, 10, 20);
+  popMatrix();
+  //nostril
+  stroke(0);
+  noFill();
+  // arc(-20, 535, 25, 25, PI/3, PI);
+  //eyelid
+  // arc(-60,570,90,50,0,2*PI/3);
+  //mouth
+  line(-30, 529, -10, 520);
+  //eyebrow
+  noStroke();
+
+  popMatrix();
+  //Eye
+  fill(255);
+  ellipse(-85, -94, 12, 7);
+  fill(0);
+  ellipse(-85, -94, 7, 7);
+  fill(238, 133, 38);
+
   popMatrix();
   popMatrix();
   popMatrix();
@@ -268,7 +399,7 @@ void drawDragon() {
   //WINGS
   fill(#CB6D1B);
   pushMatrix();
-  rotate(TtailR);
+  rotate(-TtailR);
   //LeftWing
   quad(-5, -20, -10, -25, 50, -100, 50, -95);//LeftSkinny
   triangle(120, -60, 50, -100, 50, -95);//RightSkinny
@@ -832,7 +963,7 @@ void stillDragon() {
   pushMatrix();
   translate(2100, 800-slideDragUp);
   scale(1.5/towerShrinker);
-  translate(0,-700);
+  translate(0, -700);
   pushMatrix();
   translate(-180, 240);
   fill(#CB6D1B);
@@ -850,7 +981,7 @@ void stillDragon() {
   noStroke();
   fill(238, 133, 38);
   //DAYTON YOU ADDED THIS QUAD
-  quad(228,245,245,255,270,330,250,330);
+  quad(228, 245, 245, 255, 270, 330, 250, 330);
   //THE ONE RIGHT HERE
   pushMatrix();
   scale(0.7);
@@ -973,7 +1104,7 @@ void stillDragon() {
 
 void tower() {
   pushMatrix();
-  translate(2300, 100-slideTowerUp); 
+  translate(posTower, 100-slideTowerUp); 
   pushMatrix();
   translate(0, 700);
   scale(1.5/towerShrinker);
@@ -1265,7 +1396,7 @@ void knightAnimation() {
 
 void knight() {
   pushMatrix();
-  translate(400-knightMove*1.4-moveKnightLeft, 350+treeMove*1.02+knightDrop);
+  translate(posKnightX-knightMove*1.4-moveKnightLeft, posKnightY+treeMove*1.02+knightDrop);
   scale(knightScaler);
   translate(-250, -150);
   strokeWeight(3);
@@ -1581,8 +1712,10 @@ void draw() {
   if (dragonScreen) {
     fill(random(40, 130), 0, 0);
     rect(0, 0, 500, 700);
+    drawAngryFace();
   }
   if (fightScene) {
+    strokeWeight(1);
     fill (80, 10, 90);
     rect(0, 0, 500, 400);
     fill (0, 70, 10);
@@ -1598,14 +1731,34 @@ void draw() {
   }
   if (Dloc.x>600) {
     dir = new PVector(4, 0);
+    tower();
+    towerVel++;
+    posTower=600-towerVel;
+    animateKnight=true;
   }
+  if (posTower<=100 && posKnightX<=557) {
+    towerVel--;
+    posKnightX+=knightRightVel;
+    posKnightY+=knightDownVel;
+    knightDownVel=0.51;
+    knightRightVel=0.4;
+  } else if (posKnightX>=557 && posKnightY>=200) {
+    posKnightY+=knightDownVel;
+    knightRightVel=0;
+    knightDownVel=-0.6;
+    towerVel--;
+    animateKnight=false;
+  } else if (posKnightY<=200){
+    towerVel--;
+  }
+
   if (mouseT>2 && mouseT%2==1) {
     swing=45;
   } else {
     swing=0;
   }
   if (Dloc.x<205) {
-    rect(0,0,500,700) ;
+    rect(0, 0, 500, 700) ;
   }
   println (time);
   println (mouseT);
