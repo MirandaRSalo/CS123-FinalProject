@@ -1,0 +1,89 @@
+void setup(){
+  size(500,700);
+
+}
+void draw(){
+  drawAngryFace();
+}
+
+void drawAngryFace(){
+   noStroke();
+     fill(#E37310);
+  quad(120,480,380,480,390,700,110,700);
+  
+  
+  fill(238, 133, 38);
+ 
+  
+  ellipse(250,300,450,470);//Head
+  ellipse(250,500,300,300);//Snout
+  
+  pushMatrix();
+   noFill();
+   stroke(0);
+  strokeWeight(1);
+   arc(250,450,200,100,6*PI/5,2*PI - PI/5);//SnoutLineBottom
+   arc(250,420,160,100,6*PI/5,2*PI - PI/5);//SnoutLineTop
+   arc(250,600,210,50,0,PI);
+   popMatrix();
+   noStroke();
+  fill(243, 226, 126);
+  
+  //Horns
+  pushMatrix();
+  translate(120,160);
+  rotate(-3*PI/4);
+   fill(246, 214, 2);
+  arc(0,0, 300, 150, 3*PI/2, 2*PI);
+  
+  popMatrix();//Right Horn 
+    pushMatrix();
+  translate(380,160);
+  rotate(-PI/4);
+   fill(246, 214, 2);
+  arc(0,0, 300, 150, 0,PI/2);
+  popMatrix();
+    fill(243, 226, 126);
+  triangle(210,110,250,20,290,110);//HeadSpike
+  arc(250,110,80,20,0,PI);
+  triangle(210,410,250,320,290,410);//NoseSpike
+  arc(250,410,80,20,0,PI);
+  //Eyes
+  fill(255);
+  ellipse(150,300,100,60);//LeftEyeWhite
+  ellipse(350,300,100,60);//RightEyeWhite
+  fill(0);
+  ellipse(150,300,60,60);//RightEyePupil
+  ellipse(350,300,60,60);//RightEyePupil
+  //Nostrils
+  pushMatrix();
+  translate(160,540);
+  rotate(PI/4);
+  translate(-160,-540);
+  fill(#E37310);
+  ellipse(150,530,110,70);//Behind
+    fill(182,25,33);
+  ellipse(160,540,100,60);//LeftNostirl
+  popMatrix();
+  pushMatrix();
+  translate(340,540);
+  rotate(-PI/4);
+  translate(-340,-540);
+   fill(#E37310);
+  ellipse(350,530,110,70);//Behind
+   fill(182,25,33);
+  ellipse(340,540,100,60);//RightNostil
+  popMatrix();
+  
+  //EyeBrows
+  strokeWeight(10);
+  stroke(0);
+  line(325,260,380,220);//RightEyebrow
+  line(175,260,120,220);//LeftEyebrow
+  
+ 
+}
+
+void mousePressed(){
+  println(mouseX,mouseY);
+}
